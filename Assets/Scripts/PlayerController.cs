@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class PlayerController : MonoBehaviour
     private const string IS_WALKING = "isWalking";
 
     public Animator animator;
+    public GameObject walkParticles, jumpParticles, explosionEffect;
 
     private void Start()
     {
@@ -45,6 +47,7 @@ public class PlayerController : MonoBehaviour
             //animator.SetBool(IS_GROUNDED, true);
             if (jumped)
             {
+                jumpParticles.SetActive(true);
                 animator.Play("JumpEndAnim");
                 StartCoroutine(wait());
             }
@@ -73,6 +76,7 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         jumped = false;
+        jumpParticles.SetActive(false);
     }
     private void FixedUpdate() 
     {
@@ -92,9 +96,11 @@ public class PlayerController : MonoBehaviour
     {
         if (hor_speed != 0)
         {
+            walkParticles.SetActive(true);
             animator.Play("WalkAnim");
         } else if (!jumped)
         {
+            walkParticles.SetActive(false);
             animator.Play(gameObject.name == "fireboy" ? "StayAnim" : "StayAnimation");
         }
         hor_vector.Set(hor_speed * mov_speed, _rigidbody.velocity.y);
@@ -107,5 +113,20 @@ public class PlayerController : MonoBehaviour
         Vector3 Scaler = transform.localScale;
         Scaler.x *= -1;
         transform.localScale = Scaler;
+    }
+
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.name == "fireboy" || other.gameObject.name == "waterboy")
+        {
+            explosionEffect.SetActive(true);
+            StartCoroutine(destroy());
+        }
+    }
+
+    IEnumerator destroy()
+    {
+        yield return new WaitForSeconds(1.5f);
+        SceneManager.LoadScene("SampleScene");
     }
 }
