@@ -30,6 +30,11 @@ public class PlayerController : MonoBehaviour
     private bool jumped = false;
     private void Update() 
     {
+        if (gameObject.name == "waterboy") {
+            if (_rigidbody.velocity.y < -3) {
+                _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, -3);
+            }
+        }
         if (isGrounded) 
         {
             /*if (flag2)
