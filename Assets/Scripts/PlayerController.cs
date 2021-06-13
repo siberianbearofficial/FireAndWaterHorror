@@ -122,6 +122,10 @@ public class PlayerController : MonoBehaviour
             explosionEffect.SetActive(true);
             StartCoroutine(destroy());
         }
+        if (other.gameObject.layer == 4) {
+            explosionEffect.SetActive(true);
+            StartCoroutine(destroy());
+        }
     }
 
     IEnumerator destroy()

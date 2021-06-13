@@ -32,7 +32,7 @@ public class ButtonsScriptMain : MonoBehaviour
 
     private void openLevelScene()
     {
-        SceneManager.LoadScene("LevelScene");
+        SceneManager.LoadScene("level2");
     }
 
     public void onPlayButtonDown()
