@@ -27,23 +27,48 @@ public class PlayerController : MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody2D>();
     }
-
+    private bool jumped = false;
     private void Update() 
     {
         if (isGrounded) 
         {
-            animator.SetBool(IS_GROUNDED, true);
+            /*if (flag2)
+            {
+                animator.Play("ForceStop");
+                flag2 = false;
+            }*/
+            //animator.SetBool(IS_GROUNDED, true);
+            if (jumped)
+            {
+                animator.Play("JumpEndAnim");
+                StartCoroutine(wait());
+            }
             jump_count = const_jump_count;
-        } 
+        }
         hor_speed = Input.GetAxis("Horizontal");
         if (Input.GetKeyUp(KeyCode.Space) && jump_count > 0)
         {
-            animator.SetBool(IS_GROUNDED, false);
+            //animator.SetBool(IS_GROUNDED, false);
+            jumped = true;
+            animator.Play("JumpStartAnim");
             _rigidbody.velocity = Vector2.up * jumpForce;
             jump_count--;
         }
+        /*if (hor_speed == 0)
+        {
+            animator.Play("ForceStop");
+            
+        }
+        else if (hor_speed != 0)
+        {
+           
+        }*/
     }
-
+    IEnumerator wait ()
+    {
+        yield return new WaitForSeconds(0.5f);
+        jumped = false;
+    }
     private void FixedUpdate() 
     {
         isGrounded = (Physics2D.OverlapCircle(groundCheck.position, checkRadius, whatType) && _rigidbody.velocity.y < 0);
@@ -60,7 +85,13 @@ public class PlayerController : MonoBehaviour
 
     private void Move() 
     {
-        animator.SetBool(IS_WALKING, hor_speed != 0);
+        if (hor_speed != 0)
+        {
+            animator.Play("WalkAnim");
+        } else if (!jumped)
+        {
+            animator.Play(gameObject.name == "fireboy" ? "StayAnim" : "StayAnimation");
+        }
         hor_vector.Set(hor_speed * mov_speed, _rigidbody.velocity.y);
         _rigidbody.velocity = hor_vector;
     }
