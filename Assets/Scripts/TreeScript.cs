@@ -5,14 +5,17 @@ using UnityEngine;
 public class TreeScript : MonoBehaviour
 {
     public Animator animator;
-    public GameObject fireEffect;
+    public GameObject[] fireEffects;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.name == "fireboy")
         {
             animator.Play("TreeAnim");
-            fireEffect.SetActive(true);
+            foreach (GameObject fireEffect in fireEffects)
+            {
+                fireEffect.SetActive(true);
+            }
             StartCoroutine(wait());
         }
     }
@@ -20,7 +23,6 @@ public class TreeScript : MonoBehaviour
     IEnumerator wait()
     {
         yield return new WaitForSeconds(8);
-        fireEffect.SetActive(false);
         gameObject.SetActive(false);
     }
 }
