@@ -18,6 +18,11 @@ public class PlayerController : MonoBehaviour
     public LayerMask whatType;
     public float jumpForce = 5;
 
+    private const string IS_GROUNDED = "isGrounded";
+    private const string IS_WALKING = "isWalking";
+
+    public Animator animator;
+
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
@@ -27,11 +32,13 @@ public class PlayerController : MonoBehaviour
     {
         if (isGrounded) 
         {
+            animator.SetBool(IS_GROUNDED, true);
             jump_count = const_jump_count;
         } 
         hor_speed = Input.GetAxis("Horizontal");
         if (Input.GetKeyUp(KeyCode.Space) && jump_count > 0)
         {
+            animator.SetBool(IS_GROUNDED, false);
             _rigidbody.velocity = Vector2.up * jumpForce;
             jump_count--;
         }
@@ -53,6 +60,7 @@ public class PlayerController : MonoBehaviour
 
     private void Move() 
     {
+        animator.SetBool(IS_WALKING, hor_speed != 0);
         hor_vector.Set(hor_speed * mov_speed, _rigidbody.velocity.y);
         _rigidbody.velocity = hor_vector;
     }
